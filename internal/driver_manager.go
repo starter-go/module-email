@@ -87,7 +87,7 @@ func (inst *DriverManagerImpl) FindDriver(cfg *mails.Configuration) (mails.Drive
 			return drv, nil
 		}
 	}
-	return nil, fmt.Errorf("no mails.Driver with name: %s", cfg.DriverName)
+	return nil, fmt.Errorf("no mails.Driver with name: %s", cfg.Driver)
 }
 
 // CreateDispatcher ...

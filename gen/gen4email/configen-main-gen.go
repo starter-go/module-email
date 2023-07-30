@@ -30,10 +30,12 @@ func (inst *autoRegistrar) register(factory comFactory) error {
 func (inst*autoRegistrar) addAll() error {
 
     
+    inst.register(&pecb1d470d2_internal_DispatcherManager{})
     inst.register(&pecb1d470d2_internal_DriverManagerImpl{})
-    inst.register(&pecb1d470d2_internal_MainDispatcher{})
+    inst.register(&pecb1d470d2_internal_MainDispatcherRegistry{})
     inst.register(&pecb1d470d2_internal_MockDriver{})
-    inst.register(&pecb1d470d2_internal_SenderService{})
+    inst.register(&pecb1d470d2_internal_SMSDriver{})
+    inst.register(&pecb1d470d2_internal_SMTPSenderDriver{})
 
 
     return nil

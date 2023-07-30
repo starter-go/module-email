@@ -12,6 +12,8 @@ type Test1 struct {
 	//starter:component
 
 	Sender mails.Service //starter:inject("#")
+
+	ToAddr string //starter:inject("${mails.test.to-addr}")
 }
 
 // Life ...
@@ -25,8 +27,9 @@ func (inst *Test1) run() error {
 	msg := &mails.Message{}
 
 	text := "hello, world"
+	toAddr := inst.ToAddr
 
-	msg.ToAddress = "foo@bar"
+	msg.ToAddresses = []mails.Address{mails.Address(toAddr)}
 	msg.Title = "hello"
 	msg.ContentType = "text/plain"
 	msg.Content = []byte(text)

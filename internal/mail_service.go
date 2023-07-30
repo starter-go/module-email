@@ -8,8 +8,8 @@ import (
 	"github.com/starter-go/module-email/mails"
 )
 
-// SenderService ...
-type SenderService struct {
+// DispatcherManager ...
+type DispatcherManager struct {
 
 	//starter:component
 	_as func(mails.Service) //starter:as("#")
@@ -20,47 +20,41 @@ type SenderService struct {
 	cached []mails.Dispatcher
 }
 
-func (inst *SenderService) _impl() mails.Service {
+func (inst *DispatcherManager) _impl() mails.Service {
 	return inst
 }
 
 // Life ...
-func (inst *SenderService) Life() *application.Life {
+func (inst *DispatcherManager) Life() *application.Life {
 	return &application.Life{OnCreate: inst.init}
 }
 
-func (inst *SenderService) init() error {
+func (inst *DispatcherManager) init() error {
 	_, err := inst.tryGetDispatcherList()
 	return err
 }
 
-func (inst *SenderService) getDefaultSenderAddress() mails.Address {
+func (inst *DispatcherManager) getDefaultSenderAddress() mails.Address {
 	str := inst.DefaultSenderAddr
 	return mails.Address(str)
 }
 
 // Send ...
-func (inst *SenderService) Send(c context.Context, msg *mails.Message) error {
-
+func (inst *DispatcherManager) Send(c context.Context, msg *mails.Message) error {
 	if msg.FromAddress == "" {
 		msg.FromAddress = inst.getDefaultSenderAddress()
 	}
-
 	err := fmt.Errorf("no dispatcher accept the mails.Message")
 	list := inst.getDispatcherList()
 	for _, item := range list {
 		if item.Accept(c, msg) {
-			e2 := item.Send(c, msg)
-			if e2 == nil {
-				return nil
-			}
-			err = e2
+			return item.Send(c, msg)
 		}
 	}
 	return err
 }
 
-func (inst *SenderService) getDispatcherList() []mails.Dispatcher {
+func (inst *DispatcherManager) getDispatcherList() []mails.Dispatcher {
 	list, err := inst.tryGetDispatcherList()
 	if err != nil {
 		panic(err)
@@ -68,7 +62,7 @@ func (inst *SenderService) getDispatcherList() []mails.Dispatcher {
 	return list
 }
 
-func (inst *SenderService) tryGetDispatcherList() ([]mails.Dispatcher, error) {
+func (inst *DispatcherManager) tryGetDispatcherList() ([]mails.Dispatcher, error) {
 	list := inst.cached
 	if list == nil {
 		li, err := inst.loadDispatcherList()
@@ -81,7 +75,7 @@ func (inst *SenderService) tryGetDispatcherList() ([]mails.Dispatcher, error) {
 	return list, nil
 }
 
-func (inst *SenderService) loadDispatcherList() ([]mails.Dispatcher, error) {
+func (inst *DispatcherManager) loadDispatcherList() ([]mails.Dispatcher, error) {
 	src := inst.Regs
 	dst := make([]mails.Dispatcher, 0)
 	for _, r1 := range src {
@@ -97,7 +91,7 @@ func (inst *SenderService) loadDispatcherList() ([]mails.Dispatcher, error) {
 	return dst, nil
 }
 
-func (inst *SenderService) getDispatcher(r *mails.DispatcherRegistration) mails.Dispatcher {
+func (inst *DispatcherManager) getDispatcher(r *mails.DispatcherRegistration) mails.Dispatcher {
 	if r == nil {
 		return nil
 	}

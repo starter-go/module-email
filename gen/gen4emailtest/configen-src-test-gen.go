@@ -37,6 +37,7 @@ func (inst* pcedd612adf_code_Test1) inject(injext application.InjectionExt, inst
 
 	
     com.Sender = inst.getSender(ie)
+    com.ToAddr = inst.getToAddr(ie)
 
 
     return nil
@@ -45,6 +46,11 @@ func (inst* pcedd612adf_code_Test1) inject(injext application.InjectionExt, inst
 
 func (inst*pcedd612adf_code_Test1) getSender(ie application.InjectionExt)p6a34f6f22.Service{
     return ie.GetComponent("#alias-6a34f6f2249275109e9baea3c805a883-Service").(p6a34f6f22.Service)
+}
+
+
+func (inst*pcedd612adf_code_Test1) getToAddr(ie application.InjectionExt)string{
+    return ie.GetString("${mails.test.to-addr}")
 }
 
 

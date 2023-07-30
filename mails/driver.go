@@ -2,9 +2,19 @@ package mails
 
 // Configuration ...
 type Configuration struct {
-	FromAddress Address
-	FromUser    string
-	DriverName  string
+	Driver string // name of driver
+
+	WorkAround bool
+	Enabled    bool
+	Priority   int
+
+	SenderAddress Address
+	SenderName    string
+
+	Host     string
+	Port     int
+	UserName string
+	Password string
 }
 
 // Driver 表示邮件发送驱动

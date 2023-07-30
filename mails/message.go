@@ -10,9 +10,15 @@ type Message struct {
 	FromAddress Address
 	FromUser    string
 
-	ToAddress Address
-	ToUser    string
+	ToAddresses []Address
+	ToUser      string
 
 	ContentType string
 	Content     []byte
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+func (addr Address) String() string {
+	return string(addr)
 }

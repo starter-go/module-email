@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/starter-go/module-email/mails"
 	"github.com/starter-go/vlog"
@@ -21,6 +22,7 @@ func (inst *MockDriver) name() string {
 	return "mock"
 }
 
+// ListRegistrations ...
 func (inst *MockDriver) ListRegistrations() []*mails.DriverRegistration {
 	name := inst.name()
 	r1 := &mails.DriverRegistration{
@@ -31,10 +33,12 @@ func (inst *MockDriver) ListRegistrations() []*mails.DriverRegistration {
 	return []*mails.DriverRegistration{r1}
 }
 
+// Accept ...
 func (inst *MockDriver) Accept(cfg *mails.Configuration) bool {
-	return cfg.DriverName == inst.name()
+	return cfg.Driver == inst.name()
 }
 
+// CreateDispatcher ...
 func (inst *MockDriver) CreateDispatcher(cfg *mails.Configuration) (mails.Dispatcher, error) {
 	d := &myMockDriverDispatcher{}
 	d.config = *cfg
@@ -53,11 +57,19 @@ func (inst *myMockDriverDispatcher) _impl() mails.Dispatcher {
 
 func (inst *myMockDriverDispatcher) Accept(c context.Context, msg *mails.Message) bool {
 	addr1 := msg.FromAddress
-	addr2 := inst.config.FromAddress
+	addr2 := inst.config.SenderAddress
 	return addr1 == addr2
 }
 
 func (inst *myMockDriverDispatcher) Send(c context.Context, msg *mails.Message) error {
-	vlog.Info("mock: send mail to %s", msg.ToAddress)
+	const (
+		prefix = ""
+		indent = "\t"
+	)
+	data, err := json.MarshalIndent(msg, prefix, indent)
+	if err != nil {
+		return err
+	}
+	vlog.Info("mock_email_dispatcher: send mail %s", string(data))
 	return nil
 }
